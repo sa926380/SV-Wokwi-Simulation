@@ -74,7 +74,6 @@
       color: var(--text-soft);
     }
 
-    /* VIDEO */
     .video-container {
       position: relative;
       padding-bottom: 56.25%;
@@ -92,7 +91,6 @@
       border: 0;
     }
 
-    /* CARDS */
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -107,6 +105,11 @@
       border: 1px solid rgba(233,166,184,0.25);
     }
 
+    .card strong {
+      color: var(--cream);
+      font-size: 1.05rem;
+    }
+
     .tag {
       display: inline-block;
       padding: 6px 12px;
@@ -117,21 +120,34 @@
       color: white;
     }
 
-    .hard { background: var(--hard); }
-    .soft { background: var(--soft); }
-    .priority { background: var(--peony-dark); }
-
-    /* GRAPH */
-    .diagram-box {
-      background: #fff7f2;
-      color: #241719;
-      padding: 20px;
-      border-radius: 18px;
-      overflow-x: auto;
-      margin-top: 20px;
+    .hard {
+      background: var(--hard);
     }
 
-    /* WOKWI */
+    .soft {
+      background: var(--soft);
+    }
+
+    .priority {
+      background: var(--peony-dark);
+    }
+
+    .graph-image-container {
+      margin-top: 22px;
+      background: #000;
+      padding: 18px;
+      border-radius: 18px;
+      overflow-x: auto;
+      box-shadow: 0 0 30px rgba(233,166,184,0.25);
+    }
+
+    .graph-image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+
     .wokwi-container {
       position: relative;
       padding-bottom: 62%;
@@ -167,83 +183,134 @@
 
 <main>
 
-  <!-- OVERVIEW -->
   <section>
     <h2>Project Overview</h2>
     <p>
       This project is a real-time healthcare monitoring system implemented using FreeRTOS on an ESP32.
-      It simulates a heart sensor and detects abnormal values in real time, triggering an alarm system.
+      The system reads a simulated heart sensor using a potentiometer and detects when the signal exceeds
+      a critical threshold.
     </p>
 
     <div class="video-container">
       <iframe 
         src="https://www.youtube.com/embed/LZ-Mc4S9OWA"
+        title="Application 6 Demo Video"
         allowfullscreen>
       </iframe>
     </div>
   </section>
 
-  <!-- TASKS -->
   <section>
     <h2>Real-Time Task Structure</h2>
 
     <div class="features">
+
       <div class="card">
         <strong>Sensor Task</strong>
-        <p>Reads sensor every 100 ms.</p>
-        <span class="tag hard">Hard RT</span>
+        <p>Runs every 100 ms to detect abnormal sensor values.</p>
+        <span class="tag hard">Hard Real-Time</span>
+        <span class="tag priority">Priority 2</span>
       </div>
 
       <div class="card">
-        <strong>Event Handler</strong>
-        <p>Controls alarm behavior.</p>
-        <span class="tag hard">Hard RT</span>
+        <strong>Event Handler Task</strong>
+        <p>Receives queue data and responds to alert events.</p>
+        <span class="tag hard">Hard Real-Time</span>
+        <span class="tag priority">Priority 2</span>
       </div>
 
       <div class="card">
         <strong>Button Task</strong>
-        <p>ISR-triggered acknowledgement.</p>
-        <span class="tag hard">Hard RT</span>
+        <p>Uses an ISR and binary semaphore to acknowledge the alarm.</p>
+        <span class="tag hard">Hard Real-Time</span>
+        <span class="tag priority">Priority 3</span>
       </div>
 
       <div class="card">
         <strong>Heartbeat Task</strong>
-        <p>System alive indicator.</p>
-        <span class="tag soft">Soft RT</span>
+        <p>Blinks the green LED to show that the system is alive.</p>
+        <span class="tag soft">Soft Real-Time</span>
+        <span class="tag priority">Priority 1</span>
       </div>
+
     </div>
   </section>
 
-  <!-- GRAPH -->
+  <section>
+    <h2>Key Features</h2>
+
+    <div class="features">
+
+      <div class="card">
+        <strong>Deadline Guarantee</strong>
+        <p>
+          Critical tasks run at higher priority so they are not delayed by lower-priority tasks.
+        </p>
+      </div>
+
+      <div class="card">
+        <strong>Mutex Protection</strong>
+        <p>
+          A mutex protects serial printing and prevents multiple tasks from printing at the same time.
+        </p>
+      </div>
+
+      <div class="card">
+        <strong>Counting Semaphore</strong>
+        <p>
+          A counting semaphore stores sensor alert events when the signal exceeds the threshold.
+        </p>
+      </div>
+
+      <div class="card">
+        <strong>Binary Semaphore + ISR</strong>
+        <p>
+          The button interrupt gives a binary semaphore so the acknowledgement task can respond quickly.
+        </p>
+      </div>
+
+      <div class="card">
+        <strong>Queue Communication</strong>
+        <p>
+          A queue safely transfers sensor readings from the sensor task to the event handler task.
+        </p>
+      </div>
+
+      <div class="card">
+        <strong>Persistent Alarm State</strong>
+        <p>
+          The red LED alarm continues blinking until medical staff acknowledge it with the button.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
   <section>
     <h2>Concurrency Graph</h2>
-    <p>This diagram shows how tasks run and communicate.</p>
+    <p>
+      This graph shows how the FreeRTOS tasks run concurrently and communicate using
+      queues, semaphores, interrupts, shared alarm state, and mutex protection.
+    </p>
 
-    <div class="diagram-box">
-      <pre class="mermaid">
-flowchart TD
-
-A[Sensor] --> B[Sensor Task]
-B --> C[Queue]
-C --> D[Event Handler]
-B --> E[Semaphore]
-E --> D
-D --> F[Red LED]
-G[Button] --> H[ISR]
-H --> I[Button Task]
-I --> F
-J[Heartbeat Task] --> K[Green LED]
-      </pre>
+    <div class="graph-image-container">
+      <img 
+        src="concurrency-graph.png" 
+        alt="Concurrency graph for ESP32 FreeRTOS Healthcare Monitoring System">
     </div>
   </section>
 
-  <!-- WOKWI -->
   <section>
-    <h2>Wokwi Simulation</h2>
+    <h2>Wokwi Hardware Simulation</h2>
+    <p>
+      The embedded Wokwi design shows the ESP32 hardware setup used to test the
+      potentiometer heart sensor, red alarm LED, green heartbeat LED, and button acknowledgement.
+    </p>
 
     <div class="wokwi-container">
       <iframe
         src="https://wokwi.com/projects/462023962272362497"
+        title="Wokwi ESP32 Healthcare Monitoring Simulation"
         allowfullscreen>
       </iframe>
     </div>
@@ -254,12 +321,6 @@ J[Heartbeat Task] --> K[Green LED]
 <footer>
   <p>© Sara Lucia Vargas-Cortes | UCF Electrical Engineering</p>
 </footer>
-
-<!-- MERMAID SCRIPT -->
-<script type="module">
-  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-  mermaid.initialize({ startOnLoad: true });
-</script>
 
 </body>
 </html>
