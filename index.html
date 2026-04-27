@@ -35,7 +35,6 @@
     header h1 {
       font-size: 3rem;
       margin: 0;
-      color: var(--cream);
     }
 
     header p {
@@ -67,7 +66,6 @@
     h2 {
       color: var(--peony);
       margin-top: 0;
-      font-size: 1.8rem;
       border-bottom: 2px solid rgba(233,166,184,0.35);
       padding-bottom: 10px;
     }
@@ -76,6 +74,7 @@
       color: var(--text-soft);
     }
 
+    /* VIDEO */
     .video-container {
       position: relative;
       padding-bottom: 56.25%;
@@ -93,6 +92,7 @@
       border: 0;
     }
 
+    /* CARDS */
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -105,12 +105,6 @@
       padding: 20px;
       border-radius: 16px;
       border: 1px solid rgba(233,166,184,0.25);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-    }
-
-    .card strong {
-      color: var(--cream);
-      font-size: 1.05rem;
     }
 
     .tag {
@@ -123,16 +117,36 @@
       color: white;
     }
 
-    .hard {
-      background: var(--hard);
+    .hard { background: var(--hard); }
+    .soft { background: var(--soft); }
+    .priority { background: var(--peony-dark); }
+
+    /* GRAPH */
+    .diagram-box {
+      background: #fff7f2;
+      color: #241719;
+      padding: 20px;
+      border-radius: 18px;
+      overflow-x: auto;
+      margin-top: 20px;
     }
 
-    .soft {
-      background: var(--soft);
+    /* WOKWI */
+    .wokwi-container {
+      position: relative;
+      padding-bottom: 62%;
+      height: 0;
+      margin-top: 22px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(233,166,184,0.25);
     }
 
-    .priority {
-      background: var(--peony-dark);
+    .wokwi-container iframe {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
 
     footer {
@@ -153,113 +167,85 @@
 
 <main>
 
+  <!-- OVERVIEW -->
   <section>
     <h2>Project Overview</h2>
     <p>
       This project is a real-time healthcare monitoring system implemented using FreeRTOS on an ESP32.
-      The system reads a simulated heart sensor using a potentiometer and detects when the signal exceeds
-      a critical threshold.
+      It simulates a heart sensor and detects abnormal values in real time, triggering an alarm system.
     </p>
 
     <div class="video-container">
       <iframe 
         src="https://www.youtube.com/embed/LZ-Mc4S9OWA"
-        title="Application 6 Demo Video"
         allowfullscreen>
       </iframe>
     </div>
   </section>
 
+  <!-- TASKS -->
   <section>
     <h2>Real-Time Task Structure</h2>
 
     <div class="features">
-
       <div class="card">
         <strong>Sensor Task</strong>
-        <p>Runs every 100 ms to detect abnormal sensor values.</p>
-        <span class="tag hard">Hard Real-Time</span>
-        <span class="tag priority">High Priority</span>
+        <p>Reads sensor every 100 ms.</p>
+        <span class="tag hard">Hard RT</span>
       </div>
 
       <div class="card">
-        <strong>Event Handler Task</strong>
-        <p>Responds to alerts and controls alarm behavior.</p>
-        <span class="tag hard">Hard Real-Time</span>
-        <span class="tag priority">High Priority</span>
+        <strong>Event Handler</strong>
+        <p>Controls alarm behavior.</p>
+        <span class="tag hard">Hard RT</span>
       </div>
 
       <div class="card">
         <strong>Button Task</strong>
-        <p>Uses an ISR to immediately detect user acknowledgement.</p>
-        <span class="tag hard">Hard Real-Time</span>
+        <p>ISR-triggered acknowledgement.</p>
+        <span class="tag hard">Hard RT</span>
       </div>
 
       <div class="card">
         <strong>Heartbeat Task</strong>
-        <p>Blinks a green LED to show that the system is alive.</p>
-        <span class="tag soft">Soft Real-Time</span>
-        <span class="tag priority">Low Priority</span>
+        <p>System alive indicator.</p>
+        <span class="tag soft">Soft RT</span>
       </div>
-
     </div>
   </section>
 
+  <!-- GRAPH -->
   <section>
-    <h2>Key Features</h2>
+    <h2>Concurrency Graph</h2>
+    <p>This diagram shows how tasks run and communicate.</p>
 
-    <div class="features">
+    <div class="diagram-box">
+      <pre class="mermaid">
+flowchart TD
 
-      <div class="card">
-        <strong>Deadline Guarantee</strong>
-        <p>
-          Critical tasks run at higher priority so they are not delayed by lower-priority tasks.
-        </p>
-      </div>
+A[Sensor] --> B[Sensor Task]
+B --> C[Queue]
+C --> D[Event Handler]
+B --> E[Semaphore]
+E --> D
+D --> F[Red LED]
+G[Button] --> H[ISR]
+H --> I[Button Task]
+I --> F
+J[Heartbeat Task] --> K[Green LED]
+      </pre>
+    </div>
+  </section>
 
-      <div class="card">
-        <strong>Mutex Protection</strong>
-        <p>
-          A mutex protects serial printing and prevents race conditions.
-        </p>
-      </div>
+  <!-- WOKWI -->
+  <section>
+    <h2>Wokwi Simulation</h2>
 
-      <div class="card">
-        <strong>Counting Semaphore</strong>
-        <p>
-          A counting semaphore tracks sensor events when the signal exceeds the threshold.
-        </p>
-      </div>
-
-      <div class="card">
-        <strong>Binary Semaphore + ISR</strong>
-        <p>
-          Button input is handled immediately using an interrupt and binary semaphore.
-        </p>
-      </div>
-
-      <div class="card">
-        <strong>Queue Communication</strong>
-        <p>
-          A queue safely transfers sensor data between tasks.
-        </p>
-      </div>
-
-      <div class="card">
-        <strong>Timing Verification</strong>
-        <p>
-          Timestamps and the logic analyzer show the response time is under a few milliseconds,
-          well below the 150 ms hard deadline.
-        </p>
-      </div>
-
-      <div class="card">
-        <strong>Persistent Alarm State</strong>
-        <p>
-          The red LED blinks continuously until the user acknowledges it with the button.
-        </p>
-      </div>
-
+    <div class="wokwi-container">
+      <iframe
+        src="https://wokwi.com/projects/462023962272362497"
+        allowfullscreen>
+      </iframe>
     </div>
   </section>
 
@@ -268,6 +254,12 @@
 <footer>
   <p>© Sara Lucia Vargas-Cortes | UCF Electrical Engineering</p>
 </footer>
+
+<!-- MERMAID SCRIPT -->
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
 
 </body>
 </html>
