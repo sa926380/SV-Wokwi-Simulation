@@ -1,51 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Application 6 Project Demo</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application 6 Real-Time Hardware Demo</title>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-      color: #222;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #222;
       line-height: 1.6;
     }
 
     header {
-      background-color: #1f2937;
+      background: linear-gradient(135deg, #1f2937, #374151);
       color: white;
+      padding: 60px 20px;
       text-align: center;
-      padding: 40px 20px;
+    }
+
+    header h1 {
+      font-size: 2.3rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    main {
+      max-width: 950px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
 
     section {
       background: white;
-      max-width: 900px;
-      margin: 25px auto;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     }
 
-    h1, h2 {
+    h2 {
+      color: #1f2937;
       margin-top: 0;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
     }
 
-    iframe {
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 450px;
-      border-radius: 10px;
+      height: 100%;
+      border: 0;
     }
 
-    ul {
-      padding-left: 25px;
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .feature-card {
+      background: #f9fafb;
+      padding: 18px;
+      border-radius: 10px;
+      border-left: 4px solid #2563eb;
     }
 
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 25px;
       color: #555;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -54,56 +98,83 @@
 
   <header>
     <h1>Application 6 Real-Time Hardware Demo</h1>
-    <p>Physical embedded system prototype using real-time task scheduling</p>
+    <p>
+      A physical embedded system prototype demonstrating real-time task scheduling,
+      hardware response, and timing verification.
+    </p>
   </header>
 
-  <section>
-    <h2>Project Overview</h2>
-    <p>
-      This project is a real-time embedded system implemented on physical hardware.
-      The system monitors inputs, responds to events, and demonstrates predictable timing
-      using task scheduling.
-    </p>
-  </section>
+  <main>
 
-  <section>
-    <h2>Demo Video</h2>
-    <p>
-      The video below shows the physical hardware running, including the board,
-      sensor input, LED response, and serial timing logs.
-    </p>
+    <section>
+      <h2>Project Overview</h2>
+      <p>
+        This project demonstrates a real-time embedded system running on physical hardware.
+        The system monitors inputs, responds to events, and uses task scheduling to produce
+        predictable system behavior.
+      </p>
+      <p>
+        The goal of this project was to show how embedded software can coordinate hardware
+        components while meeting timing requirements.
+      </p>
+    </section>
 
-    <!-- Replace this iframe with your YouTube embed code -->
-    <iframe 
-      src="https://youtu.be/LZ-Mc4S9OWA?si=IfTljsQSos_z5rQx"
-      title="Application 6 Demo Video"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
-  </section>
+    <section>
+      <h2>Demo Video</h2>
+      <p>
+        The video below shows the physical hardware setup, system behavior, LED outputs,
+        and timing verification.
+      </p>
 
-  <section>
-    <h2>Key Features</h2>
-    <ul>
-      <li>Physical hardware implementation</li>
-      <li>Real-time task scheduling</li>
-      <li>Sensor-triggered system response</li>
-      <li>LED indicators for system status</li>
-      <li>Timing verification using serial logs</li>
-    </ul>
-  </section>
+      <div class="video-container">
+        <iframe 
+          src="https://www.youtube.com/embed/LZ-Mc4S9OWA"
+          title="Application 6 Demo Video"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
 
-  <section>
-    <h2>What I Learned</h2>
-    <p>
-      This project helped me understand how real-time systems organize different tasks
-      so important events can be handled on time. I learned how hardware inputs,
-      software timing, and task priorities work together in an embedded system.
-    </p>
-  </section>
+    <section>
+      <h2>Key Features</h2>
+
+      <div class="features">
+        <div class="feature-card">
+          <strong>Physical Hardware</strong>
+          <p>Implemented and tested using a real embedded hardware setup.</p>
+        </div>
+
+        <div class="feature-card">
+          <strong>Real-Time Scheduling</strong>
+          <p>Uses scheduled tasks to manage timing and system behavior.</p>
+        </div>
+
+        <div class="feature-card">
+          <strong>Event Response</strong>
+          <p>Responds to hardware input through LEDs and system actions.</p>
+        </div>
+
+        <div class="feature-card">
+          <strong>Timing Verification</strong>
+          <p>Uses serial output/logs to verify response timing.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What I Learned</h2>
+      <p>
+        This project helped me better understand how real-time systems use tasks,
+        timing, and hardware interaction to create predictable behavior. I also learned
+        how important it is to test the system on physical hardware because real components
+        can behave differently than simulations.
+      </p>
+    </section>
+
+  </main>
 
   <footer>
-    <p>Created by Sara Vargas-Cortes | Application 6 Project</p>
+    <p>Created by Sara Lucia Vargas-Cortes | Application 6 Project</p>
   </footer>
 
 </body>
